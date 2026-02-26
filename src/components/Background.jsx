@@ -6,7 +6,7 @@ export default function Background() {
             {/* Normal unscaled wrapper so Spline handles its own responsive resizing naturally */}
             <div className="w-full h-full">
                 <Spline
-                    scene="https://prod.spline.design/ojq6ZkcShWyPF62S/scene.splinecode"
+                    scene="https://prod.spline.design/GDR8q1V34Y5UDhPi/scene.splinecode"
                     className="w-full h-full"
                 />
             </div>
