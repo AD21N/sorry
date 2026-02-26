@@ -1,0 +1,105 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=Poppins:wght@300;400;500;600&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --color-apology-dark: #0f172a;
+  --color-apology-light: #f8fafc;
+  --color-apology-accent: #c4b5fd;
+  --font-serif: "Playfair Display", serif;
+  --font-sans: "Inter", sans-serif;
+  --font-elegant: "Poppins", sans-serif; /* The new beautiful font */
+}
+
+/* Base styles to enable scrolling */
+:root {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+}
+
+/* FORCE MOBILE SCROLLING */
+html, body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  min-height: 100vh;
+  overflow-x: hidden;
+  overflow-y: auto !important;
+  -webkit-overflow-scrolling: touch; /* Required for smooth iPhone scrolling */
+  touch-action: pan-y; /* Tells the browser: "Allow vertical swiping!" */
+}
+
+#root {
+  width: 100%;
+  min-height: 100vh;
+  display: block !important; /* Vite defaults to flex, which breaks scrolling */
+}
+
+/* UPDATED: Removed the glass background, now it just perfectly centers the text */
+.glass-text-container {
+  padding: 0;
+  border-radius: 0;
+  max-width: 42rem;
+  margin: 0 auto;
+  width: 90%;
+  text-align: center;
+  /* Stripped out the backgrounds and borders */
+  background-color: transparent;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  border: none;
+  box-shadow: none;
+  
+  /* Shifts the text up slightly so it sits right on top of the flower center */
+  position: relative;
+  top: -10vh; 
+}
+
+/* NEW: The Thanos Text Styling and Animation */
+.love-text {
+  font-family: var(--font-elegant);
+  text-shadow: 0 4px 20px rgba(0,0,0,0.6);
+  letter-spacing: 0.02em;
+  /* Notice: ALL animation properties are removed from here! */
+}
+
+/* The Thanos Dissolve Animation */
+@keyframes thanosSnapFadeOut {
+  0% {
+    opacity: 1;
+    filter: blur(0px) brightness(100%);
+    transform: scale(1);
+  }
+  20% {
+    opacity: 0.95;
+    filter: blur(1px) brightness(150%);
+    transform: scale(1.02);
+  }
+  50% {
+    opacity: 0.7;
+    filter: blur(4px) brightness(200%);
+    transform: scale(0.98);
+  }
+  80% {
+    opacity: 0.2;
+    filter: blur(8px) brightness(250%) saturate(50%);
+    transform: scale(0.95);
+  }
+  100% {
+    opacity: 0;
+    filter: blur(12px) brightness(300%) saturate(0%);
+    transform: scale(0.9);
+    visibility: hidden;
+  }
+}
+
+/* The Loader Button Glow Animation */
+.loader-button {
+  box-shadow: 0 0 20px rgba(196, 181, 253, 0.2);
+  transition: all 0.5s ease;
+}
+
+.loader-button:hover {
+  box-shadow: 0 0 40px rgba(196, 181, 253, 0.5);
+  background-color: rgba(255, 255, 255, 0.1);
+}
