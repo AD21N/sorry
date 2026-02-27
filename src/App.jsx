@@ -2,28 +2,49 @@ import { useState, useRef } from 'react';
 import { motion, AnimatePresence, useScroll, useTransform } from 'framer-motion';
 import Background from './components/Background';
 import Section from './components/Section';
+import ReasonsSection from './components/ReasonsSection';
+import BreathingSpace from './components/BreathingSpace';
 
-// 1. The Falling Hearts Animation Component
-const FallingHearts = () => {
-  const hearts = Array.from({ length: 40 }); 
+// 1. UPDATED: The Magic Explosion Finale
+const MagicExplosion = () => {
+  const particles = Array.from({ length: 100 });
   return (
-    <div className="fixed inset-0 pointer-events-none z-[200] overflow-hidden">
-      {hearts.map((_, i) => {
-        const randomX = Math.random() * 100;
-        const randomDuration = 2 + Math.random() * 3;
-        const randomDelay = Math.random() * 1.5;
-        const randomSize = 15 + Math.random() * 20;
-        
+    <div className="fixed inset-0 pointer-events-none z-[200] overflow-hidden flex items-center justify-center">
+      {/* Background Flash */}
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: [0, 0.4, 0] }}
+        transition={{ duration: 1.5, ease: "easeOut" }}
+        className="absolute inset-0 bg-pink-500/20 mix-blend-screen"
+      />
+
+      {particles.map((_, i) => {
+        const isHeart = Math.random() > 0.4;
+        const size = isHeart ? 15 + Math.random() * 30 : 4 + Math.random() * 8;
+        const angle = Math.random() * Math.PI * 2;
+        const distance = 100 + Math.random() * 800;
+        const duration = 1.5 + Math.random() * 3;
+        const delay = Math.random() * 0.2;
+
         return (
           <motion.div
             key={i}
-            initial={{ opacity: 1, y: -50, x: `${randomX}vw` }}
-            animate={{ opacity: 0, y: '120vh' }}
-            transition={{ duration: randomDuration, delay: randomDelay, ease: "easeIn" }}
-            className="absolute text-pink-500 drop-shadow-md"
-            style={{ fontSize: `${randomSize}px` }}
+            initial={{ opacity: 0, scale: 0, x: 0, y: 0 }}
+            animate={{
+              opacity: [0, 1, 0],
+              scale: [0, 1.5, 0],
+              x: Math.cos(angle) * distance,
+              y: Math.sin(angle) * distance + (Math.random() * 200 - 100) // Slight gravity
+            }}
+            transition={{ duration, delay, ease: [0.23, 1, 0.32, 1] }} // Decelerating cubic bezier
+            className={`absolute drop-shadow-[0_0_10px_rgba(236,72,153,0.8)] ${isHeart ? 'text-pink-500' : 'bg-white rounded-full'}`}
+            style={{
+              fontSize: isHeart ? `${size}px` : undefined,
+              width: !isHeart ? `${size}px` : undefined,
+              height: !isHeart ? `${size}px` : undefined,
+            }}
           >
-            ❤️
+            {isHeart ? '❤️' : ''}
           </motion.div>
         );
       })}
@@ -34,18 +55,18 @@ const FallingHearts = () => {
 // 2. NEW: The Scroll-Synced Thanos Dissolve Component
 const ScrollThanosText = ({ children }) => {
   const ref = useRef(null);
-  
+
   // Tracks exactly where this specific text block is on the screen
   const { scrollYProgress } = useScroll({
     target: ref,
-    offset: ["start 85%", "end 15%"] 
+    offset: ["start 75%", "end 25%"]
   });
 
   // Maps the scroll progress to opacity, blur, scale, and vertical movement
   const opacity = useTransform(scrollYProgress, [0, 0.2, 0.6, 0.9], [0, 1, 1, 0]);
   const filter = useTransform(
-    scrollYProgress, 
-    [0, 0.2, 0.6, 0.9], 
+    scrollYProgress,
+    [0, 0.2, 0.6, 0.9],
     ["blur(10px) brightness(2)", "blur(0px) brightness(1)", "blur(0px) brightness(1)", "blur(12px) brightness(2)"]
   );
   const scale = useTransform(scrollYProgress, [0, 0.2, 0.6, 0.9], [0.9, 1, 1, 0.9]);
@@ -54,6 +75,26 @@ const ScrollThanosText = ({ children }) => {
   return (
     <motion.div ref={ref} style={{ opacity, filter, scale, y }} className="w-full">
       {children}
+    </motion.div>
+  );
+};
+
+// 3. NEW: The Ambient Breathing Glow
+const AmbientGlow = () => {
+  return (
+    <motion.div
+      className="fixed inset-0 pointer-events-none z-0 flex items-center justify-center opacity-50"
+      animate={{
+        scale: [1, 1.1, 1],
+        opacity: [0.3, 0.5, 0.3]
+      }}
+      transition={{
+        duration: 8,
+        repeat: Infinity,
+        ease: "easeInOut"
+      }}
+    >
+      <div className="w-[80vw] h-[80vw] md:w-[60vw] md:h-[60vw] rounded-full bg-apology-accent/10 blur-[100px]" />
     </motion.div>
   );
 };
@@ -76,9 +117,15 @@ export default function App() {
   const startExperience = () => {
     setIsStarted(true);
     if (audioRef.current) {
+      // 1. Set the volume to a comfortable, dreamy level
       audioRef.current.volume = 0.5;
+
+      // 2. Skip directly to the female vocal bridge (2:28)
+      audioRef.current.currentTime = 4;
+
+      // 3. Play the music!
       audioRef.current.play().catch(err => {
-        console.error("Music error!", err);
+        console.error("Music error! Make sure sorry.mp3 is inside the 'public' folder.", err);
       });
     }
   };
@@ -115,32 +162,54 @@ export default function App() {
       {/* The Magical Loader */}
       <AnimatePresence>
         {!isStarted && (
-          <motion.div 
+          <motion.div
             initial={{ opacity: 1 }}
             exit={{ opacity: 0 }}
+            transition={{ duration: 1.5, ease: "easeInOut" }}
             className="fixed inset-0 z-[100] bg-apology-dark flex flex-col items-center justify-center p-6"
           >
-            <motion.p 
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="font-serif italic text-white/50 mb-8"
+            {/* Ambient Entrance Glow */}
+            <motion.div
+              className="absolute w-[150vw] h-[150vw] md:w-[80vw] md:h-[80vw] rounded-full bg-apology-accent/5 blur-[120px]"
+              animate={{ scale: [1, 1.2, 1], opacity: [0.5, 0.8, 0.5] }}
+              transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
+            />
+
+            <motion.p
+              initial={{ opacity: 0, y: 15, filter: "blur(5px)" }}
+              animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+              transition={{ duration: 1.5, delay: 0.5, ease: "easeOut" }}
+              className="font-serif italic text-apology-light/60 mb-10 text-lg tracking-wide z-10"
             >
               For you, with all my heart...
             </motion.p>
-            <button 
-              onClick={startExperience}
-              className="px-10 py-4 rounded-full border border-white/20 text-white font-serif text-xl cursor-pointer pointer-events-auto shadow-[0_0_20px_rgba(196,181,253,0.2)] hover:shadow-[0_0_40px_rgba(196,181,253,0.5)] transition-all duration-500 bg-white/5 backdrop-blur-md"
+
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 1.5, delay: 1.2, ease: "easeOut" }}
+              className="z-10 group relative"
             >
-              Open Message
-            </button>
+              <button
+                onClick={startExperience}
+                className="relative overflow-hidden px-12 py-5 rounded-full border border-apology-accent/30 text-white font-serif text-xl cursor-pointer pointer-events-auto shadow-[0_0_20px_rgba(196,181,253,0.15)] hover:shadow-[0_0_40px_rgba(196,181,253,0.4)] hover:border-apology-accent/60 transition-all duration-700 bg-black/20 backdrop-blur-xl"
+              >
+                {/* Sweeping Light Effect */}
+                <span className="absolute inset-0 -translate-x-[150%] bg-gradient-to-r from-transparent via-white/20 to-transparent skew-x-12 transition-transform duration-1000 ease-out group-hover:translate-x-[150%]" />
+                <span className="relative z-10 tracking-widest text-shadow-sm">
+                  Open Message
+                </span>
+              </button>
+            </motion.div>
           </motion.div>
         )}
       </AnimatePresence>
 
       {/* Main 3D & Text Content */}
-      <div className={isStarted ? "opacity-100" : "opacity-0 pointer-events-none"}>
+      <div className={isStarted ? "opacity-100 transition-opacity duration-[2000ms]" : "opacity-0 pointer-events-none"}>
         <Background />
-        
+        {isStarted && <AmbientGlow />}
+
         <div className="relative z-10 w-full flex flex-col items-center pointer-events-none">
           {SECTION_CONTENT.map((text, index) => (
             <Section key={index}>
@@ -154,6 +223,12 @@ export default function App() {
               </div>
             </Section>
           ))}
+
+          {/* New Interactive Reasons Section placed right before the end */}
+          <ReasonsSection />
+
+          {/* The New Breathing Space Section */}
+          <BreathingSpace />
 
           {/* Final I Love You Section */}
           <section className="relative min-h-screen w-full flex flex-col items-center justify-center pt-[30vh] pb-[15vh] pointer-events-none">
@@ -193,8 +268,7 @@ export default function App() {
         </div>
       </div>
 
-      {/* Render the falling hearts when button is clicked */}
-      {showHearts && <FallingHearts />}
+      {showHearts && <MagicExplosion />}
     </main>
   );
 }

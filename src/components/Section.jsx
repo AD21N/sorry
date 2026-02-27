@@ -3,7 +3,7 @@ import { motion } from 'framer-motion';
 export default function Section({ children, className = '' }) {
     return (
         <motion.section
-            className={`relative min-h-screen w-full flex items-center justify-center px-6 py-24 snap-center ${className}`}
+            className={`relative min-h-[35vh] w-full flex items-center justify-center px-6 py-12 snap-center ${className}`}
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
             exit={{ opacity: 0 }}
