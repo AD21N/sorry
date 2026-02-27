@@ -78,7 +78,11 @@ const ScrollThanosText = ({ children }) => {
   const y = useTransform(scrollYProgress, [0, 0.2, 0.6, 0.9], [40, 0, 0, -60]);
 
   return (
-    <motion.div ref={ref} style={{ opacity, filter, scale, y }} className="w-full">
+    <motion.div
+      ref={ref}
+      style={{ opacity, filter, scale, y, willChange: "transform, opacity, filter" }}
+      className="w-full"
+    >
       {children}
     </motion.div>
   );
@@ -88,7 +92,7 @@ const ScrollThanosText = ({ children }) => {
 const AmbientGlow = () => {
   return (
     <motion.div
-      className="fixed inset-0 pointer-events-none z-0 flex items-center justify-center opacity-50"
+      className="fixed inset-0 pointer-events-none z-0 flex items-center justify-center opacity-50 will-change-[transform,opacity]"
       animate={{
         scale: [1, 1.1, 1],
         opacity: [0.3, 0.5, 0.3]
@@ -99,7 +103,7 @@ const AmbientGlow = () => {
         ease: "easeInOut"
       }}
     >
-      <div className="w-[80vw] h-[80vw] md:w-[60vw] md:h-[60vw] rounded-full bg-apology-accent/10 blur-[100px]" />
+      <div className="w-[80vw] h-[80vw] md:w-[60vw] md:h-[60vw] rounded-full bg-apology-accent/10 blur-[80px]" />
     </motion.div>
   );
 };
@@ -126,7 +130,7 @@ export default function App() {
       audioRef.current.volume = 0.5;
 
       // 2. Skip directly to the female vocal bridge (2:28)
-      audioRef.current.currentTime = 4;
+      audioRef.current.currentTime = 3;
 
       // 3. Play the music!
       audioRef.current.play().catch(err => {

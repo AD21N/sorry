@@ -148,41 +148,50 @@ export default function BreathingSpace() {
                     ) : (
                         <motion.div
                             key="message-container"
-                            initial={{ opacity: 0, scale: 0.8, x: snitchPos.x, y: snitchPos.y }}
-                            animate={{ opacity: 1, scale: 1, x: snitchPos.x, y: snitchPos.y }}
+                            initial={{ opacity: 0, scale: 0.8 }}
+                            animate={{ opacity: 1, scale: 1 }}
                             transition={{ type: "spring", bounce: 0.5 }}
-                            className="absolute z-50 pointer-events-auto flex items-center justify-center"
+                            className="fixed inset-0 z-50 pointer-events-none flex items-center justify-center p-4"
                         >
-                            {/* Static Snitch Avatar */}
-                            <div className="relative flex items-center justify-center shrink-0">
-                                <div className="w-8 h-8 rounded-full bg-yellow-400 shadow-[0_0_20px_rgba(250,204,21,0.8)] z-10" />
+                            <div className="relative flex flex-col items-center max-w-sm w-full pointer-events-auto">
+                                {/* Static Snitch Avatar Centered */}
+                                <div className="relative flex items-center justify-center shrink-0 mb-6 shrink-0 z-10">
+                                    <div className="w-12 h-12 rounded-full bg-yellow-400 shadow-[0_0_30px_rgba(250,204,21,0.8)]" />
+                                    {/* Left Wing Static */}
+                                    <div className="absolute right-8 w-10 h-4 bg-white/60 blur-[1px] rounded-[100%] origin-right -rotate-12" />
+                                    {/* Right Wing Static */}
+                                    <div className="absolute left-8 w-10 h-4 bg-white/60 blur-[1px] rounded-[100%] origin-left rotate-12" />
+                                </div>
 
-                                {/* WhatsApp Style White Bubble attached to Snitch dynamically */}
+                                {/* WhatsApp Style White Bubble Centered */}
                                 <div
-                                    className={`absolute top-1/2 -translate-y-1/2 ${snitchPos.x > 0 ? 'right-full mr-3 rounded-2xl rounded-tr-sm' : 'left-full ml-3 rounded-2xl rounded-tl-sm'} bg-[#ffffff] text-[#111b21] px-4 pt-3 pb-7 shadow-xl w-[75vw] max-w-[280px] text-left group`}
+                                    className="relative bg-[#ffffff] text-[#111b21] px-5 pt-4 pb-8 shadow-2xl w-full rounded-2xl rounded-tr-sm text-center"
                                 >
-                                    {/* Tail Effect Pointing to Snitch */}
+                                    {/* Tail Effect Pointing up to Snitch */}
                                     <div
-                                        className={`absolute top-1/2 -translate-y-1/2 ${snitchPos.x > 0 ? '-right-2' : '-left-2'} w-3 h-4 bg-[#ffffff]`}
-                                        style={{ clipPath: snitchPos.x > 0 ? 'polygon(0 0, 100% 50%, 0 100%)' : 'polygon(100% 0, 0 50%, 100% 100%)' }}
+                                        className="absolute -top-3 left-1/2 -translate-x-1/2 w-4 h-4 bg-[#ffffff]"
+                                        style={{ clipPath: 'polygon(50% 0%, 0% 100%, 100% 100%)' }}
                                     />
 
-                                    <p className="text-[15px] font-sans leading-[22px] break-words">
+                                    <p className="text-[16px] font-sans leading-[24px] break-words">
                                         {message}
                                     </p>
 
-                                    <div className="absolute bottom-1 right-3 text-[11px] text-gray-500">
+                                    <div className="absolute bottom-2 right-4 text-[12px] text-gray-400">
                                         {new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                                     </div>
+                                </div>
 
-                                    <div className={`absolute -bottom-8 ${snitchPos.x > 0 ? 'right-0 text-right' : 'left-0 text-left'} w-full whitespace-nowrap`}>
-                                        <button
-                                            onClick={() => setIsCaught(false)}
-                                            className="text-white/60 text-xs hover:text-[13px] hover:text-white transition-all drop-shadow-md"
-                                        >
-                                            Tap anywhere to release
-                                        </button>
-                                    </div>
+                                <div className="mt-8">
+                                    <button
+                                        onClick={(e) => {
+                                            e.stopPropagation();
+                                            setIsCaught(false);
+                                        }}
+                                        className="px-8 py-3 rounded-full border border-white/30 bg-black/40 text-white backdrop-blur-md shadow-lg hover:bg-white/20 hover:scale-105 transition-all text-sm tracking-wider uppercase drop-shadow-md"
+                                    >
+                                        Release Snitch
+                                    </button>
                                 </div>
                             </div>
                         </motion.div>
