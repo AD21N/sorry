@@ -5,26 +5,27 @@ import Section from './components/Section';
 import ReasonsSection from './components/ReasonsSection';
 import BreathingSpace from './components/BreathingSpace';
 
-// 1. UPDATED: The Magic Explosion Finale
-const MagicExplosion = () => {
-  const particles = Array.from({ length: 100 });
+// 1. UPDATED: The Magic Explosion Finale (Optimized for Mobile & Repeatable)
+const MagicExplosion = ({ burstId }) => {
+  // Fewer particles on mobile, but enough to look magical
+  const particles = Array.from({ length: 60 });
   return (
-    <div className="fixed inset-0 pointer-events-none z-[200] overflow-hidden flex items-center justify-center">
+    <div key={burstId} className="fixed inset-0 pointer-events-none z-[300] overflow-hidden flex items-center justify-center">
       {/* Background Flash */}
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: [0, 0.4, 0] }}
         transition={{ duration: 1.5, ease: "easeOut" }}
-        className="absolute inset-0 bg-pink-500/20 mix-blend-screen"
+        className="absolute inset-0 bg-pink-500/20 mix-blend-screen will-change-[opacity]"
       />
 
       {particles.map((_, i) => {
         const isHeart = Math.random() > 0.4;
-        const size = isHeart ? 15 + Math.random() * 30 : 4 + Math.random() * 8;
+        const size = isHeart ? 15 + Math.random() * 25 : 4 + Math.random() * 8;
         const angle = Math.random() * Math.PI * 2;
-        const distance = 100 + Math.random() * 800;
-        const duration = 1.5 + Math.random() * 3;
-        const delay = Math.random() * 0.2;
+        const distance = 100 + Math.random() * 800; // Explode far outwards
+        const duration = 1.5 + Math.random() * 2;
+        const delay = Math.random() * 0.1;
 
         return (
           <motion.div
@@ -34,14 +35,17 @@ const MagicExplosion = () => {
               opacity: [0, 1, 0],
               scale: [0, 1.5, 0],
               x: Math.cos(angle) * distance,
-              y: Math.sin(angle) * distance + (Math.random() * 200 - 100) // Slight gravity
+              y: Math.sin(angle) * distance + (Math.random() * 100 - 50) // Slight gravity variation
             }}
             transition={{ duration, delay, ease: [0.23, 1, 0.32, 1] }} // Decelerating cubic bezier
-            className={`absolute drop-shadow-[0_0_10px_rgba(236,72,153,0.8)] ${isHeart ? 'text-pink-500' : 'bg-white rounded-full'}`}
+            className={`absolute ${isHeart ? 'text-pink-500' : 'bg-white rounded-full'}`}
             style={{
               fontSize: isHeart ? `${size}px` : undefined,
               width: !isHeart ? `${size}px` : undefined,
               height: !isHeart ? `${size}px` : undefined,
+              willChange: "transform, opacity", // Hardware acceleration for mobile smoothness
+              // Removed heavy drop-shadow filter on 100 particles to fix mobile lag
+              ...(isHeart ? { textShadow: "0px 0px 5px rgba(236,72,153,0.5)" } : {})
             }}
           >
             {isHeart ? '❤️' : ''}
@@ -51,6 +55,7 @@ const MagicExplosion = () => {
     </div>
   );
 };
+
 
 // 2. NEW: The Scroll-Synced Thanos Dissolve Component
 const ScrollThanosText = ({ children }) => {
@@ -110,7 +115,7 @@ const SECTION_CONTENT = [
 
 export default function App() {
   const [isStarted, setIsStarted] = useState(false);
-  const [showHearts, setShowHearts] = useState(false);
+  const [heartClickCount, setHeartClickCount] = useState(0);
   const [isMuted, setIsMuted] = useState(false);
   const audioRef = useRef(null);
 
@@ -246,7 +251,7 @@ export default function App() {
               />
 
               <motion.button
-                onClick={() => setShowHearts(true)}
+                onClick={() => setHeartClickCount(prev => prev + 1)}
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
                 className="relative flex items-center gap-4 px-10 py-5 rounded-full bg-black/20 border border-white/30 backdrop-blur-xl shadow-2xl overflow-hidden cursor-pointer pointer-events-auto"
@@ -268,7 +273,7 @@ export default function App() {
         </div>
       </div>
 
-      {showHearts && <MagicExplosion />}
+      {heartClickCount > 0 && <MagicExplosion burstId={heartClickCount} />}
     </main>
   );
 }
